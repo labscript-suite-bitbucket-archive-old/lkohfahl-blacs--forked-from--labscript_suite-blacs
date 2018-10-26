@@ -91,6 +91,7 @@ for module_name in os.listdir(PLUGINS_DIR):
         # If so lets add it to the config
         if not module_name in [name for name, val in exp_config.items('BLACS/plugins')]:
             exp_config.set('BLACS/plugins', module_name, str(module_name in default_plugins))
+            logger.info('The following plugin was added to the labconfig-file: ' + module_name)
 
         # only load activated plugins
         if exp_config.getboolean('BLACS/plugins', module_name):
@@ -100,3 +101,6 @@ for module_name in os.listdir(PLUGINS_DIR):
                 logger.exception('Could not import plugin \'%s\'. Skipping.'%module_name)
             else:
                 modules[module_name] = module
+for module_name in [name for name, val in exp_config.items('BLACS/plugins')]:
+    if (not module_name in os.listdir(PLUGINS_DIR) and module_name not in [name for name, val in exp_config.items('DEFAULT')]):
+        logger.info('The following plugin cannot be loaded:' + module_name)
